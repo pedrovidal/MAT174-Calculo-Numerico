@@ -44,10 +44,25 @@ def auc_boole(X, Y, f):
   h = (b - a) / 4
   coeficients = [7, 32, 12, 32, 7]
   for i, coef in enumerate(coeficients):
-    f_x_i = a + h * i
-    somatorio += coef * f(f_x_i, X, Y)
+    x_i = a + h * i
+    somatorio += coef * f(x_i, X, Y)
   return 2 * h * somatorio / 45
 
+def auc_simpson(X, Y, precision, f):
+  a = X[0]
+  b = X[-1]
+  h = (b - a) / precision
+  somatorio = 0
+  for i in range(precision + 1):
+    x_i = a + h * i
+    if i == 0:
+      somatorio += Y[0]
+    elif i == precision:
+      somatorio += Y[-1]
+    elif i % 2:
+      somatorio += 4 * f(x_i, X, Y)
+    else:
+      somatorio += 2 * f(x_i, X, Y)
 
 def main():
   np.random.seed(1)
