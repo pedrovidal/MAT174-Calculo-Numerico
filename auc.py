@@ -94,13 +94,18 @@ def main():
   size = 98
 
   X = sorted(np.unique(np.random.uniform(size=size)))
-  Y = sorted(np.random.uniform(size=len(X)))
+  Y = sorted(np.random.uniform(size=len(X)*2))
+  Y = Y[98:199]
 
   X = np.append(X, (0, 1))
   Y = np.append(Y, (np.random.uniform(size=1), np.random.uniform(size=1)))
 
   X = sorted(X)
   Y = sorted(Y)
+
+  # for i in range(len(Y)):
+  # 	if Y[i] < X[i]:
+  # 		Y[i] = X[i] + (X[i] - Y[i])
 
   # print(X, Y)
 
