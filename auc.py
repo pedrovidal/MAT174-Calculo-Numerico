@@ -14,7 +14,7 @@ def f_lagrange(x, X, Y):
   n = len(X) - 1
   return sum((Y[k] * L(k, x, X)) for k in range(n + 1))
 
-def auc_trapezoidal(X, Y, precision, f):
+def auc_trapezoidal_uniform(X, Y, precision, f):
   # print('trapezoidal:')
   a = X[0]
   b = X[-1]
@@ -35,6 +35,14 @@ def auc_trapezoidal(X, Y, precision, f):
     else:
       somatorio += f_x_i
   return X_trap, Y_trap, (h / 2) * somatorio
+
+def auc_trapezoidal_non_uniform(X, Y, f):
+  # print('trapezoidal:')
+  somatorio = 0
+  for i in range(1, len(X)):
+    h = X[i] - X[i - 1]
+    somatorio += (Y[i - 1] + Y[i]) * h / 2 
+  return somatorio
 
 def auc_boole(X, Y, a, b, f):
   # print('boole:')
@@ -85,8 +93,8 @@ def auc_simpson(X, Y, precision, f):
   return X_simpson, Y_simpson, h * somatorio / 3
 
 def main():
-  # np.random.seed(3)
-  np.random.seed(9)
+  np.random.seed(3)
+  # np.random.seed(9)
   # X = [93.3, 98.9, 104.4]
   # Y = [1548, 1544, 1538]
   # print(f(100, X, Y))
@@ -111,7 +119,12 @@ def main():
 
   precision = 20
   
-  X_trap, Y_trap, auc_trap = auc_trapezoidal(X, Y, precision, f_lagrange)
+  X_trap, Y_trap, auc_trap_uni = auc_trapezoidal_uniform(X, Y, precision, f_lagrange)
+
+  auc_trap_non_uni = auc_trapezoidal_non_uniform(X, Y, f_lagrange)
+
+  # print(auc_trap_uni, auc_trap_non_uni)
+  
   X_simpson, Y_simpson, auc_simp = auc_simpson(X, Y, precision, f_lagrange)
 
   X_boole, Y_boole, auc_boo = auc_boole(X, Y, 0.0, 0.25, f_lagrange)
@@ -138,7 +151,7 @@ def main():
   plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 
   plt.plot(X_trap, Y_trap, color='darkblue',
-           lw=lw, label='trapezoidal ROC curve (area = %0.4f)' % auc_trap)
+           lw=lw, label='trapezoidal ROC curve (area = %0.4f)' % auc_trap_uni)
   plt.xlim([0.0, 1.0])
   plt.ylim([0.0, 1.0005])
   plt.xlabel('False Positive Rate')
